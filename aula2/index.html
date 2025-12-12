@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Chatbot ML & PLN</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f0f2f5;
+        display: flex;
+        justify-content: center;
+        padding-top: 40px;
+    }
+    #chat-container {
+        width: 420px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,.1);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+    #chat {
+        height: 450px;
+        padding: 15px;
+        overflow-y: auto;
+    }
+    .msg {
+        margin: 8px 0;
+        padding: 10px 12px;
+        border-radius: 8px;
+        max-width: 85%;
+        line-height: 1.4;
+    }
+    .user {
+        background: #d1e7ff;
+        align-self: flex-end;
+    }
+    .bot {
+        background: #e8e8e8;
+        align-self: flex-start;
+    }
+    #input-area {
+        display: flex;
+        border-top: 1px solid #ccc;
+    }
+    #user-input {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        font-size: 15px;
+    }
+    #send-btn {
+        padding: 12px 20px;
+        border: none;
+        background: #0066ff;
+        color: white;
+        cursor: pointer;
+    }
+    #send-btn:hover {
+        background: #0051cc;
+    }
+</style>
+</head>
+<body>
+
+<div id="chat-container">
+    <div id="chat"></div>
+
+    <div id="input-area">
+        <input type="text" id="user-input" placeholder="Pergunte sobre ML ou PLN...">
+        <button id="send-btn">Enviar</button>
+    </div>
+</div>
+
+<script>
+// -----------------------------
+// Base de respostas
+// -----------------------------
+
+const respostas = [
+    {
+        keywords: ["o que é machine learning", "definição de machine learning"],
+        resposta: "Machine Learning é uma área da IA que permite que sistemas aprendam padrões automaticamente a partir de dados, sem programação explícita."
+    },
+    {
+        keywords: ["tipos de machine learning", "aprendizado supervisionado", "aprendizado não supervisionado"],
+        resposta: "Os principais tipos de Machine Learning são: Supervisionado, Não Supervisionado, Aprendizado por Reforço e Semi-supervisionado."
+    },
+    {
+        keywords: ["o que é pln", "o que é processamento de linguagem natural", "pln"],
+        resposta: "PLN é uma área da IA que permite que computadores entendam, interpretem e gerem linguagem humana."
+    },
+    {
+        keywords: ["exemplos de pln", "aplicações de pln"],
+        resposta: "PLN é usado em chatbots, tradutores automáticos, análise de sentimentos, sumarização de textos e assistentes virtuais."
+    },
+    {
+        keywords: ["o que é rede neural", "como funciona rede neural"],
+        resposta: "Redes neurais são modelos inspirados no cérebro humano que aprendem a mapear entradas para saídas por meio de neurônios artificiais interconectados."
+    },
+    {
+        keywords: ["transformer", "bert", "gpt"],
+        resposta: "Transformers são modelos avançados de PLN que usam mecanismos de atenção. Exemplos: BERT, GPT, T5."
+    },
+    {
+        keywords: ["default"],
+        resposta: "Não tenho certeza sobre isso ainda 😅. Pergunte algo sobre Machine Learning ou PLN!"
+    }
+];
+
+// -----------------------------
+// Função de resposta
+// -----------------------------
+function gerarResposta(mensagem) {
+    const texto = mensagem.toLowerCase();
+
+    for (let item of respostas) {
+        for (let k of item.keywords) {
+            if (texto.includes(k)) {
+                return item.resposta;
+            }
+        }
+    }
+    return respostas.at(-1).resposta;
+}
+
+// -----------------------------
+// Chat
+// -----------------------------
+const chat = document.getElementById("chat");
+const input = document.getElementById("user-input");
+const sendBtn = document.getElementById("send-btn");
+
+function addMessage(text, sender) {
+    const div = document.createElement("div");
+    div.classList.add("msg", sender);
+    div.textContent = text;
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+}
+
+function enviar() {
+    const msg = input.value.trim();
+    if (!msg) return;
+
+    addMessage(msg, "user");
+    const resposta = gerarResposta(msg);
+
+    setTimeout(() => {
+        addMessage(resposta, "bot");
+    }, 400);
+
+    input.value = "";
+}
+
+sendBtn.addEventListener("click", enviar);
+input.addEventListener("keypress", e => {
+    if (e.key === "Enter") enviar();
+});
+</script>
+
+</body>
+</html>
